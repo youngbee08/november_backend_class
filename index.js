@@ -3,7 +3,7 @@ const app = express();
 const port = 3000;
 app.listen(port, () => {
   console.log(
-    `App is running on port:${port} Server Url:http://localhost:${port}`
+    `App is running on port:${port} Server Url: http://localhost:${port}`
   );
 });
 
@@ -46,8 +46,24 @@ const products = [
   },
 ];
 
-app.get("/products", (req, res) => {
-  console.log(req.params);
+const token = "dgfdgfdgfhddghgdhjgdhg2665udwqii2q90@287732ewhhsdjk";
+const checkIsAuthenticated = (req, res, next) => {
+  if (!req.query.token) {
+    return res.status(401).json({
+      status: "error",
+      message: "Unauthorized",
+    });
+  }
+  if (req.query.token !== token) {
+    return res.status(422).json({
+      status: "error",
+      message: "Invalid token",
+    });
+  }
+  next()
+};
+
+app.get("/products", checkIsAuthenticated, (req, res) => {
   if (products.length === 0) {
     return res.json({
       success: false,
