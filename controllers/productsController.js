@@ -29,4 +29,27 @@ async function createProduct(req, res) {
   }
 }
 
-module.exports = { createProduct };
+async function getProducts(req, res) {
+  try {
+    const getProducts = await productModel.find();
+    if (!getProducts) {
+      return res.status(404).json({
+        status: "error",
+        message: "Couldn't find any product..",
+      });
+    }
+    res.status(200).json({
+      status: "success",
+      message: "Product found successful",
+      products: getProducts,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: "error",
+      message: "Internal Server Error",
+    });
+  }
+}
+
+module.exports = { createProduct, getProducts };
